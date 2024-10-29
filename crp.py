@@ -6,6 +6,8 @@ import joblib
 import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
+import os
+
 st.set_page_config(page_title="腐蚀速率预测与模型建立", layout="wide", initial_sidebar_state="expanded")
 
 # 页面标题
@@ -103,9 +105,18 @@ else:
                 model = xgb.XGBRegressor(objective='reg:squarederror')
                 model.fit(X_train, y_train)
 
-                # 保存模型
-                joblib.dump(model, r'D:\model.pkl')
-                st.success("模型已保存到D:\\model.pkl")
+                # 保存模型到临时文件
+                model_file_path = 'model.pkl'
+                joblib.dump(model, model_file_path)
+
+                # 创建下载按钮
+                with open(model_file_path, 'rb') as f:
+                    st.download_button(
+                        label="下载模型",
+                        data=f,
+                        file_name='model.pkl',
+                        mime='application/octet-stream'
+                    )
 
                 # 可视化模型效果
                 y_train_pred = model.predict(X_train)
@@ -122,7 +133,6 @@ else:
                 st.subheader("模型效果可视化")
 
                 # 第一个图：真实值与预测值的对比
-
                 fig1 = px.scatter(x=y_train, y=y_train_pred, title=f'训练集真实值与预测值的对比 (R²: {train_r2:.2f})',
                                   color_discrete_sequence=["blue"])
                 fig1.add_scatter(x=[y_train.min(), y_train.max()], y=[y_train.min(), y_train.max()], mode='lines',
