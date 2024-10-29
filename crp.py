@@ -104,8 +104,8 @@ else:
                 model.fit(X_train, y_train)
 
                 # 保存模型
-                joblib.dump(model, 'C:/model.pkl')
-                st.success("模型已保存到C:/model.pkl")
+                joblib.dump(model, 'C:\\model.pkl')
+                st.success("模型已保存到C:\\model.pkl")
 
                 # 可视化模型效果
                 y_train_pred = model.predict(X_train)
